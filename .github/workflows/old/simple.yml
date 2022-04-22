@@ -1,0 +1,27 @@
+name: To docx
+on:                 # це подія, яка вказує коли буде запускатися workflow
+  issues:           # назва події - коли щось відбувається з issues
+    types: pinned   # тип активності - прикрпілення
+jobs:
+  job1:
+    runs-on: ubuntu-18.04
+    steps:
+      - name: uses my repository
+        uses: actions/checkout@v2
+      - uses: docker://pandoc/core:2.9.2.1
+        with:
+          args: "--resource-path=лабораторні/ -s лабораторні/1_base.md лабораторні/2_prod.md лабораторні/3_storzone.md лабораторні/4_schedbase.md лабораторні/5_dms.md лабораторні/6_scheduler.md лабораторні/7_KPI.md лабораторні/8_wms.md -o labs.docx --lua-filter=./.github/workflows/luafilters.lua --reference-doc=./.github/workflows/custom.docx" # gets appended to pandoc command
+      - name: Upload to Google Drive
+        uses: satackey/action-google-drive@v1
+        with:
+          skicka-tokencache-json: ${{ secrets.SKICKA_TOKENCACHE_JSON }}
+          upload-from: labs.docx
+          upload-to: /github
+          # For those who set up Google Drive API client ID and secret themselves
+          google-client-id: ${{ secrets.GOOGLE_CLIENT_ID }}
+          google-client-secret: ${{ secrets.GOOGLE_CLIENT_SECRET }}
+      - name: upload file from vm # вивантажує артефакт в файл текстовий рядок 
+        uses: actions/upload-artifact@v2
+        with:
+          name: docx
+          path: labs.docx
