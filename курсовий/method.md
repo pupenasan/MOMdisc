@@ -412,41 +412,38 @@
 
 Таблиця 8. Опис сегментів продуктів
 
-| Тип              | Назва                         | Код   | Од. вим | Опис | Перетв | Процес | Рецепт |
-| ---------------- | ----------------------------- | ----- | ------- | ---- | ------ | ------ | ------ |
-| Raw material     | unpasteurized milk            | RM101 |         |      |        |        |        |
-| Intermediate     | thermized milk 3.2%           | IP124 |         |      |        |        |        |
-| Intermediate     | thermized milk 2,5%           | IP113 |         |      |        |        |        |
-| Intermediate     | thermized milk 1%             | IP103 |         |      |        |        |        |
-| Raw material     | Sugar                         | RM126 |         |      |        |        |        |
-| Raw material     | Ferment                       | RM125 |         |      |        |        |        |
-| Packing material | bottle 1l                     | PM101 |         |      |        |        |        |
-| Packing material | bottle 2l                     | PM102 |         |      |        |        |        |
-| Packing material | tetra pack 1l                 | PM103 |         |      |        |        |        |
-| Packing material | can 0,5l                      | PM104 |         |      |        |        |        |
-| Intermediate     | Yogurt 3,2%                   | IP123 |         |      |        |        |        |
-| Intermediate     | cooled milk 3,2%              | IP122 |         |      |        |        |        |
-| Intermediate     | cooled milk 2,5%              | IP112 |         |      |        |        |        |
-| Intermediate     | pasteurized milk  3,2%        | IP121 |         |      |        |        |        |
-| Intermediate     | pasteurized milk  2,5%        | IP111 |         |      |        |        |        |
-| Intermediate     | thermized milk 3.2%           | IP124 |         |      |        |        |        |
-| Intermediate     | thermized milk 2,5%           | IP113 |         |      |        |        |        |
-| Intermediate     | thermized milk 1%             | IP103 |         |      |        |        |        |
-| Intermediate     | cooled milk 1%                | IP102 |         |      |        |        |        |
-| Intermediate     | pasteurized milk 1%           | IP101 |         |      |        |        |        |
-| Consumer unit    | packed yogurt 3,2%  C0,5L     | CU126 |         |      |        |        |        |
-| Consumer unit    | packed yogurt 3,2%  TP1L      | CU125 |         |      |        |        |        |
-| Consumer unit    | packed milk 3,2%  TP1L        | CU123 |         |      |        |        |        |
-| Consumer unit    | packed milk 3,2%  B1L         | CU121 |         |      |        |        |        |
-| Consumer unit    | packed milk 3,2%  B2L         | CU122 |         |      |        |        |        |
-| Consumer unit    | packed milk 1% B2L            | CU102 |         |      |        |        |        |
-| Consumer unit    | packed milk 1% TP1L           | CU103 |         |      |        |        |        |
-| Consumer unit    | packed milk 2,5%  TP1L        | CU113 |         |      |        |        |        |
-| Consumer unit    | packed milk 2,5%  B2L         | CU112 |         |      |        |        |        |
-| Consumer unit    | packed milk 2,5%  B1L         | CU111 |         |      |        |        |        |
-| Consumer unit    | packed milk 1% B1L            | CU101 |         |      |        |        |        |
-| Packing material | Carton Box                    | PM105 |         |      |        |        |        |
-| Sales unit       | Carton Box with  milk TP1L 1% | SU100 |         |      |        |        |        |
+| **Тип**          | **Назва**                    | **Код** | **Од.  вим** | **Перетв**              | **Процес**          | **Рецепт**          | **Упаковка** |
+| ---------------- | ---------------------------- | ------- | ------------ | ----------------------- | ------------------- | ------------------- | ------------ |
+| Raw material     | unpasteurized milk           | RM101   | Volume       |                         |                     |                     |              |
+| Raw material     | Sugar                        | RM126   | Volume       | Mass/Volume  kg/l       |                     |                     |              |
+| Raw material     | Ferment                      | RM125   | Volume       | Mass/Volume  kg/l       |                     |                     |              |
+| Intermediate     | thermized milk 1%            | IP101   | Volume       |                         | Thermization        | RM101               |              |
+| Intermediate     | thermized milk 2,5%          | IP102   | Volume       |                         | Thermization        | RM101               |              |
+| Intermediate     | thermized milk 3,2%          | IP103   | Volume       |                         | Thermization        | RM101               |              |
+| Intermediate     | pasteurized milk 1%          | IP111   | Volume       |                         | Pasteurization milk | IP101               |              |
+| Intermediate     | pasteurized milk 2,5%        | IP112   | Volume       |                         | Pasteurization milk | IP102               |              |
+| Intermediate     | pasteurized milk 3,2%        | IP113   | Volume       |                         | Pasteurization milk | IP103               |              |
+| Intermediate     | cooled milk 1%               | IP121   | Volume       | Volume/Count  1 l/piece | Milk production     | IP111               |              |
+| Intermediate     | cooled milk 2,5%             | IP122   | Volume       | Volume/Count  1 l/piece | Milk production     | IP112               |              |
+| Intermediate     | cooled milk 3,2%             | IP123   | Volume       | Volume/Count  1 l/piece | Milk production     | IP113               |              |
+| Intermediate     | Yogurt 3,2%                  | IP124   | Volume       | Volume/Count  1 l/piece | Yogurt Production   | IP113  RM126  RM125 |              |
+| Consumer unit    | packed milk 1% B1L           | CU101   | Count        |                         | Filling_bottle      | IP111               | PM101        |
+| Consumer unit    | packed milk 1% B2L           | CU102   | Count        |                         | Filling_bottle      | IP111               | PM102        |
+| Consumer unit    | packed milk 1% TP1L          | CU103   | Count        |                         | Filling_tetrapack   | IP111               | PM103        |
+| Consumer unit    | packed milk 2,5% B1L         | CU111   | Count        |                         | Filling_bottle      | IP112               | PM101        |
+| Consumer unit    | packed milk 2,5% B2L         | CU112   | Count        |                         | Filling_bottle      | IP112               | PM102        |
+| Consumer unit    | packed milk 2,5% TP1L        | CU113   | Count        |                         | Filling_tetrapack   | IP112               | PM103        |
+| Consumer unit    | packed milk 3,2% B1L         | CU121   | Count        |                         | Filling_bottle      | IP113               | PM101        |
+| Consumer unit    | packed milk 3,2% B2L         | CU122   | Count        |                         | Filling_bottle      | IP113               | PM102        |
+| Consumer unit    | packed milk 3,2% TP1L        | CU123   | Count        |                         | Filling_tetrapack   | IP113               | PM103        |
+| Consumer unit    | packed yogurt 3,2% TP1L      | CU125   | Count        |                         | Filling_bottle      | IP124               | PM101        |
+| Consumer unit    | packed yogurt 3,2% C0,5L     | CU126   | Count        |                         | Filling_can         | IP124               | PM102        |
+| Sales unit       | Carton Box with milk TP1L 1% | SU100   | Count        |                         | Paletizing          | CU103               | PM105        |
+| Packing material | bottle 1l                    | PM101   | Count        |                         |                     |                     |              |
+| Packing material | bottle 2l                    | PM102   | Count        |                         |                     |                     |              |
+| Packing material | tetra pack 1l                | PM103   | Count        |                         |                     |                     |              |
+| Packing material | can 0,5l                     | PM104   | Count        |                         |                     |                     |              |
+| Packing material | Carton Box                   | PM105   | Count        |                         |                     |                     |              |
 
 ### 3.7. Ключові показники ефективності 
 
@@ -454,7 +451,21 @@
 
 ## 4. Вимоги до оформлення розрахунково-пояснювальної записки і графічної частини роботи
 
-- усі п
+Титульна сторінка з обов’язковим зазначенням теми і прізвища виконавця оформлюється згідно діючих вимог на момент виконання.
+
+Пояснювальна записка має містити наступні розділи:
+
+1. Загальний опис виробничого майданчику, включаючи reception, storage, production і shipment.
+
+2. Опис технічної структури системи
+
+3. Опис сегментів процесів
+
+4. Опис устаткування, включно з робочими центрами, зонами та вузлами зберігання.
+
+5. Опис зв’язку з системою керування АСУТП із наведенням загального переліку Equipment, описом  параметрів стану та команд
+
+6. Опис сегментів продукту.
 
 ## 5. Порядок захисту курсової роботи
 

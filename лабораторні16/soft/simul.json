@@ -1,0 +1,828 @@
+[
+    {
+        "id": "f5e15242.abfd",
+        "type": "tab",
+        "label": "Flow 1",
+        "disabled": false,
+        "info": ""
+    },
+    {
+        "id": "9eaa4bcb.5816a",
+        "type": "debug",
+        "z": "f5e15242.abfd",
+        "name": "",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "x": 590,
+        "y": 210,
+        "wires": []
+    },
+    {
+        "id": "6c1d550b.2e5c",
+        "type": "split",
+        "z": "f5e15242.abfd",
+        "name": "",
+        "splt": "\\n",
+        "spltType": "str",
+        "arraySplt": 1,
+        "arraySpltType": "len",
+        "stream": false,
+        "addname": "",
+        "x": 290,
+        "y": 240,
+        "wires": [
+            [
+                "7234aeb7.6baa88",
+                "327d8d80.33cb96"
+            ]
+        ]
+    },
+    {
+        "id": "7234aeb7.6baa88",
+        "type": "function",
+        "z": "f5e15242.abfd",
+        "name": "ToServer",
+        "func": "var obj = msg.payload;\nvar nsParent = obj.nsParent || \"1\";\nvar ns = obj.ns || \"1\";\nvar Parent =\"\";\nvar Name = \"\";    \n//setFolder\nvar msg1 = {};\nvar p=\"\";\nfor (var i = 1; i < 45; i++) {//45\n    p = \"P\" + i;\n    Parent = p + \"_\" + obj.Parent;\n    Name = p + \"_\" + obj.Name; \n\n    msg1.payload = {\"opcuaCommand\":\"setFolder\"};\n    if (nsParent==\"0\") {\n        msg1.topic = \"ns=\" + nsParent + \";\" + obj.Parent} \n    else { \n        msg1.topic = \"ns=\" + nsParent + \";s=\" + Parent} \n    node.send (msg1);\n\n    //add folder\n    if (obj.Type == \"Folder\") {\n        msg1.payload={\"opcuaCommand\":\"addFolder\"};\n        msg1.topic = \"ns=\" + ns + \";s=\" + Name} \n    else { //add var \n            msg1.payload={\"opcuaCommand\":\"addVariable\"};\n            msg1.topic = \"ns=1;s=\" + Name + \";datatype=\" + obj.Type;\n    }\n    node.send (msg1);\n    flow.set(Name, {\"ns\":msg1.topic, \"parent\":Parent });\n}\n\n//return [msg];",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 440,
+        "y": 240,
+        "wires": [
+            [
+                "9eaa4bcb.5816a",
+                "8732b79d.8cc4"
+            ]
+        ]
+    },
+    {
+        "id": "8732b79d.8cc4",
+        "type": "OpcUa-Server",
+        "z": "f5e15242.abfd",
+        "port": "53880",
+        "name": "",
+        "endpoint": "",
+        "x": 646,
+        "y": 146,
+        "wires": [
+            [
+                "81a1dda6.ef69a"
+            ]
+        ]
+    },
+    {
+        "id": "7b53cec5.327388",
+        "type": "OpcUa-Client",
+        "z": "f5e15242.abfd",
+        "endpoint": "19c761b7.e5ff9e",
+        "action": "subscribe",
+        "deadbandtype": "a",
+        "deadbandvalue": 1,
+        "time": "2",
+        "timeUnit": "s",
+        "certificate": "n",
+        "localfile": "",
+        "name": "",
+        "x": 480,
+        "y": 400,
+        "wires": [
+            [
+                "fa6e376c.cff9d8",
+                "aeb44118.91568"
+            ]
+        ]
+    },
+    {
+        "id": "fa6e376c.cff9d8",
+        "type": "debug",
+        "z": "f5e15242.abfd",
+        "name": "",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "x": 670,
+        "y": 400,
+        "wires": []
+    },
+    {
+        "id": "4d143b6c.fe4818",
+        "type": "function",
+        "z": "f5e15242.abfd",
+        "name": "ToSubscribe",
+        "func": "var obj = msg.payload;\nvar nsParent = obj.nsParent || \"1\";\nvar ns = obj.ns || \"1\";\nvar Parent =\"\";\nvar Name = \"\";    \n//setFolder\nvar msg1 = {};\nvar p=\"\";\nmsg1.payload=1000;\nfor (var i = 1; i < 2; i++) {\n    p = \"P\" + i;\n    Parent = p + \"_\" + obj.Parent;\n    Name = p + \"_\" + obj.Name; \n    if (nsParent==\"0\") {\n        msg1.topic = \"ns=\" + nsParent + \";\" + obj.Parent} \n    else { \n        msg1.topic = \"ns=\" + nsParent + \";s=\" + Parent} \n    node.send (msg1);\n\n    //add folder\n    if (obj.Type !== \"Folder\") {\n            msg1.topic = \"ns=1;s=\" + Name + \";datatype=\" + obj.Type;\n            node.send (msg1);\n    }\n}\n",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 450,
+        "y": 320,
+        "wires": [
+            [
+                "7b53cec5.327388",
+                "fa6e376c.cff9d8"
+            ]
+        ]
+    },
+    {
+        "id": "327d8d80.33cb96",
+        "type": "delay",
+        "z": "f5e15242.abfd",
+        "name": "",
+        "pauseType": "delay",
+        "timeout": "10",
+        "timeoutUnits": "seconds",
+        "rate": "1",
+        "nbRateUnits": "1",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": false,
+        "x": 260,
+        "y": 320,
+        "wires": [
+            [
+                "4d143b6c.fe4818",
+                "f67c50b0.b2a92"
+            ]
+        ]
+    },
+    {
+        "id": "a5853f2a.5260c",
+        "type": "debug",
+        "z": "f5e15242.abfd",
+        "name": "",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "x": 270,
+        "y": 460,
+        "wires": []
+    },
+    {
+        "id": "aeb44118.91568",
+        "type": "function",
+        "z": "f5e15242.abfd",
+        "name": "Change",
+        "func": "var msg1={};\nvar ar = msg.topic.split(\";\");\nvar name = ar[1].replace(/s=/,\"\");\nvar obj = flow.get (name);\nobj.val = msg.payload;\nobj.ts = msg.sourceTimestamp;\nobj.name = name;\nflow.set(name, obj);\nif (name.indexOf(\"CMD\")> -1 && (obj.val!==0) ) {\n    msg1.payload = obj.val;\n    msg1.topic = obj.parent;\n    msg1.name = name; \n    return msg1;\n}",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 120,
+        "y": 460,
+        "wires": [
+            [
+                "a5853f2a.5260c",
+                "d137397d.efab98",
+                "2149ea97.3988b6"
+            ]
+        ]
+    },
+    {
+        "id": "b4c2ae7d.cf723",
+        "type": "debug",
+        "z": "f5e15242.abfd",
+        "name": "",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "x": 730,
+        "y": 600,
+        "wires": []
+    },
+    {
+        "id": "81a1dda6.ef69a",
+        "type": "debug",
+        "z": "f5e15242.abfd",
+        "name": "",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "x": 760,
+        "y": 200,
+        "wires": []
+    },
+    {
+        "id": "e028a893.509fb8",
+        "type": "inject",
+        "z": "f5e15242.abfd",
+        "name": "",
+        "topic": "ns=1;s=P1_A1.PAST1.ALM;datatype=UInt32",
+        "payload": "14",
+        "payloadType": "num",
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "x": 90,
+        "y": 400,
+        "wires": [
+            [
+                "9a5d6e28.56f318"
+            ]
+        ]
+    },
+    {
+        "id": "9a5d6e28.56f318",
+        "type": "change",
+        "z": "f5e15242.abfd",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "action",
+                "pt": "msg",
+                "to": "write",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 260,
+        "y": 400,
+        "wires": [
+            [
+                "7b53cec5.327388"
+            ]
+        ]
+    },
+    {
+        "id": "e4954121.5f3e8",
+        "type": "function",
+        "z": "f5e15242.abfd",
+        "name": "PK",
+        "func": "function toOPC (var1)\n{\n    var msg = {\"topic\" : var1.ns, \"payload\" :var1.val, \"action\" : \"write\"};\n    node.send (msg);\n}\n\nvar eq_name = msg.topic; //name equipment\nvar eq = flow.get (eq_name);//equipment\n\nvar n = context.get (eq_name) || {\"T_PREV\": new Date(), \"T_STEP\" : 0.0, \"STEP\" : 0}\nvar now = new Date();\nvar dt = (now - n.T_PREV)/1000 ;//періодичність виклику\nn.T_STEP += dt; //час кроку\n//визначення продуктивності\n//eq.PlanD.val = eq.PlanD.val || \"\";\nvar hms = eq.PlanD.val.split(\":\");\nvar period = parseInt(hms[0])*60*60 + parseInt(hms[1])*60 + parseInt(hms[2]);\nvar quant = eq.PlanQ.val || 0.0;\nvar prod = 0;\nif (period > 0) prod=quant/period; \n\n//визначення приросту\nvar dq_plan=prod*dt;//плановий приріст \nvar dq_var=dq_plan*0.1*Math.random();//варіація до 10%\nvar dq = dq_plan - dq_var;\nvar dq_lost=0;\nvar r = Math.random();\nif (r>0.7){\n    dq_lost=1; \n}//втрати\ndq = dq - dq_lost;\nif (dq<1) dq=1; \n//node.warn (\"dq=\" + dq + \" dq_plan=\" + dq_plan + \" dq_var=\" + dq_var);\n\n//------------імітація -----------\nif (eq.smOn.val===true) {\n    switch (eq.STA.val) {\n            case 0://init\n        //eq.FIQ1.val = 0;eq.FIQ2.val = 0;\n        eq.STA.val=1;\n        break;\n    case 1://idle\n        if (eq.CMD.val==1){\n            eq.FIQ1.val = 0; eq.FIQ2.val = 0;\n        }\n        break;\n    case 13://starting\n  \n        break;        \n    case 2://running\n        eq.FIQ1.val += parseInt(dq);\n        eq.FIQ2.val += parseInt(dq_lost);\n        if (eq.CMD.val==2){\n            eq.FIQ1.val = 0; eq.FIQ2.val = 0;\n        }\n        break;\n   //eq.FIQ1.val = 0;eq.FIQ2.val = 0;\n    }\n}\n//------------\n\n//-------------------------керування\nswitch (eq.STA.val) {\n    case 0://init\n        //eq.FIQ1.val = 0;eq.FIQ2.val = 0;\n        eq.STA.val=1;\n        break;\n    case 1://idle\n        if (eq.CMD.val==1){\n           eq.STA.val=2;\n           n.T_STEP=0;\n        }\n        break;\n    case 2://running\n        if (eq.CMD.val==2){\n           eq.STA.val=1;\n           n.T_STEP=0;\n        }\n        if (eq.CMD.val==3){\n           eq.STA.val=4;\n           n.T_STEP=0;\n        }        \n        break;\n    case 4://paused\n        if (eq.CMD.val==2){\n           eq.STA.val=1;\n           n.T_STEP=0;\n        }\n        if (eq.CMD.val==1){\n           eq.STA.val=2;\n           n.T_STEP=0;\n        }  \n        break;\n    default:\n        eq.STA.val=0;\n} \neq.CMD.val=0;\n//---------------------------------\n\nif (eq.FIQ1.val<0) eq.FIQ1.val=0;\nif (eq.FIQ2.val<0) eq.FIQ2.val=0;\n\nn.T_PREV = now;\ncontext.set (eq_name,n); \ntoOPC (eq.FIQ1);\ntoOPC (eq.FIQ2);\ntoOPC (eq.STA);\ntoOPC (eq.CMD);\n\n\n\n/*\n0 – ініціалізація (тільки при старті ПЛК)\n1 – Idle (простоювання)\n13 – Starting (запускається)\n2 - Running (виконується) \n14- Completing (завершується)\n3 – Pausing (призупиняється)\n4 – Paused (призупинено)\n5 – Holding (утримується)\n6 – Hold (утримуване)\n7 – Restarting (перезапускається)\n8 – Complete (завершено)\n9 – Stopping (зупиняється)\n10 – Stopped (зупинено)\n11 – Aborting (переривається)\n12 – Aborted (перервано)\n15 – Resuming (відновлюється)\n*/",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 570,
+        "y": 600,
+        "wires": [
+            [
+                "b4c2ae7d.cf723",
+                "7b53cec5.327388"
+            ]
+        ]
+    },
+    {
+        "id": "4d8d5091.b3e098",
+        "type": "inject",
+        "z": "f5e15242.abfd",
+        "name": "",
+        "topic": "P1_A1.PK105",
+        "payload": "",
+        "payloadType": "date",
+        "repeat": "10",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "x": 160,
+        "y": 600,
+        "wires": [
+            [
+                "e4954121.5f3e8"
+            ]
+        ]
+    },
+    {
+        "id": "f0674465.cedf38",
+        "type": "inject",
+        "z": "f5e15242.abfd",
+        "name": "",
+        "topic": "P1_A1.PK106",
+        "payload": "",
+        "payloadType": "date",
+        "repeat": "10",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "x": 160,
+        "y": 640,
+        "wires": [
+            [
+                "2e996ac1.e7435a"
+            ]
+        ]
+    },
+    {
+        "id": "160fb6fc.c08821",
+        "type": "inject",
+        "z": "f5e15242.abfd",
+        "name": "",
+        "topic": "P1_A1.PK107",
+        "payload": "",
+        "payloadType": "date",
+        "repeat": "10",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "x": 160,
+        "y": 680,
+        "wires": [
+            [
+                "1cc58d81.aafb6a"
+            ]
+        ]
+    },
+    {
+        "id": "cd288a70.019ba8",
+        "type": "inject",
+        "z": "f5e15242.abfd",
+        "name": "",
+        "topic": "P1_A1.PK108",
+        "payload": "",
+        "payloadType": "date",
+        "repeat": "10",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "x": 160,
+        "y": 720,
+        "wires": [
+            [
+                "ece5a4ab.be2b58"
+            ]
+        ]
+    },
+    {
+        "id": "2e996ac1.e7435a",
+        "type": "delay",
+        "z": "f5e15242.abfd",
+        "name": "",
+        "pauseType": "delay",
+        "timeout": "2",
+        "timeoutUnits": "seconds",
+        "rate": "1",
+        "nbRateUnits": "1",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": false,
+        "x": 380,
+        "y": 640,
+        "wires": [
+            [
+                "e4954121.5f3e8"
+            ]
+        ]
+    },
+    {
+        "id": "1cc58d81.aafb6a",
+        "type": "delay",
+        "z": "f5e15242.abfd",
+        "name": "",
+        "pauseType": "delay",
+        "timeout": "4",
+        "timeoutUnits": "seconds",
+        "rate": "1",
+        "nbRateUnits": "1",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": false,
+        "x": 380,
+        "y": 680,
+        "wires": [
+            [
+                "e4954121.5f3e8"
+            ]
+        ]
+    },
+    {
+        "id": "ece5a4ab.be2b58",
+        "type": "delay",
+        "z": "f5e15242.abfd",
+        "name": "",
+        "pauseType": "delay",
+        "timeout": "6",
+        "timeoutUnits": "seconds",
+        "rate": "1",
+        "nbRateUnits": "1",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": false,
+        "x": 380,
+        "y": 720,
+        "wires": [
+            [
+                "e4954121.5f3e8"
+            ]
+        ]
+    },
+    {
+        "id": "9e1b38ee.16a368",
+        "type": "function",
+        "z": "f5e15242.abfd",
+        "name": "PAST",
+        "func": "var eq_name = msg.topic; //name equipment\nvar eq = flow.get (eq_name);//equipment\n\nvar n = context.get (eq_name) || {\"T_PREV\": new Date(), \"T_STEP\" : 0.0, \"STEP\" : 0}\nvar now = new Date();\nvar dt = (now - n.T_PREV)/1000 ;//періодичність виклику\nn.T_STEP += dt; //час кроку\n//визначення продуктивності\n\nvar hms = eq.PlanD.val.split(\":\");\nvar period = parseInt(hms[0],10)*60*60 + parseInt(hms[1],10)*60 + parseInt(hms[2],10);\nvar quant = eq.PlanQ.val || 0.0;\nvar prod = 0;\nif (period > 0) prod=quant*1000/period; \n\n//визначення приросту\nvar dq_plan=prod*dt;//плановий приріст \nvar dq_var=dq_plan*0.1*Math.random();//варіація до 10%\nvar dq = dq_plan - dq_var;\n\n\n//node.warn (\"dq=\" + dq + \" dq_plan=\" + dq_plan + \" dq_var=\" + dq_var);\n\n//------------імітація -----------\nif (eq.smOn.val===true) {\n    var secs = now/100000;\n    sin1 = Math.sin(secs);\n    //node.warn (sin1);\n    eq.TT101.val = sin1*5 + 30.0; \n    switch (eq.STA.val) {\n            case 0://init\n        eq.STA.val=1;\n        break;\n    case 1://idle\n        if (eq.CMD.val==1){\n            eq.FIQ1.val = 0; \n        }\n        break;\n    case 13://starting\n  \n        break;        \n    case 2://running\n        eq.FIQ1.val +=dq;\n        break;\n    }\n}\n//------------\n\n//-------------------------керування\nswitch (eq.STA.val) {\n    case 0://init\n        //eq.FIQ1.val = 0;eq.FIQ2.val = 0;\n        eq.STA.val=1;\n        break;\n    case 1://idle\n        if (eq.CMD.val==1){\n           eq.STA.val=2;\n           n.T_STEP=0;\n        }\n        break;\n    case 2://running\n        if (eq.CMD.val==2){\n           eq.STA.val=1;\n           n.T_STEP=0;\n        }\n        if (eq.CMD.val==3){\n           eq.STA.val=4;\n           n.T_STEP=0;\n        }        \n        break;\n    case 4://paused\n        if (eq.CMD.val==2){\n           eq.STA.val=1;\n           n.T_STEP=0;\n        }\n        if (eq.CMD.val==1){\n           eq.STA.val=2;\n           n.T_STEP=0;\n        }  \n        break;\n    default:\n        eq.STA.val=0;\n} \n//---------------------------------\n\ntoOPC (eq.TT101);\ntoOPC (eq.FIQ1);\ntoOPC (eq.STA);\n\nn.T_PREV = now;\ncontext.set (eq_name,n); \nvar msg1 = {\"topic\":eq.CMD.ns, \"payload\" : 0};\nreturn msg1;\n\nfunction toOPC (var1)\n{\n    var msg = {\"topic\" : var1.ns, \"payload\" :var1.val, \"action\" : \"write\"};\n    node.send (msg);\n}\n\n/*\n0 – ініціалізація (тільки при старті ПЛК)\n1 – Idle (простоювання)\n13 – Starting (запускається)\n2 - Running (виконується) \n14- Completing (завершується)\n3 – Pausing (призупиняється)\n4 – Paused (призупинено)\n5 – Holding (утримується)\n6 – Hold (утримуване)\n7 – Restarting (перезапускається)\n8 – Complete (завершено)\n9 – Stopping (зупиняється)\n10 – Stopped (зупинено)\n11 – Aborting (переривається)\n12 – Aborted (перервано)\n15 – Resuming (відновлюється)\n*/",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 590,
+        "y": 780,
+        "wires": [
+            [
+                "7b53cec5.327388"
+            ]
+        ]
+    },
+    {
+        "id": "356b0cc0.c29168",
+        "type": "inject",
+        "z": "f5e15242.abfd",
+        "name": "",
+        "topic": "P1_A1.PAST1",
+        "payload": "",
+        "payloadType": "date",
+        "repeat": "10",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "x": 160,
+        "y": 780,
+        "wires": [
+            [
+                "2bbf2146.7c2fe6"
+            ]
+        ]
+    },
+    {
+        "id": "2bbf2146.7c2fe6",
+        "type": "delay",
+        "z": "f5e15242.abfd",
+        "name": "",
+        "pauseType": "delay",
+        "timeout": "8",
+        "timeoutUnits": "seconds",
+        "rate": "1",
+        "nbRateUnits": "1",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": false,
+        "x": 380,
+        "y": 780,
+        "wires": [
+            [
+                "9e1b38ee.16a368"
+            ]
+        ]
+    },
+    {
+        "id": "d137397d.efab98",
+        "type": "switch",
+        "z": "f5e15242.abfd",
+        "name": "",
+        "property": "topic",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "eq",
+                "v": "P1_A1.PK105",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "P1_A1.PK106",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "P1_A1.PK107",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "P1_A1.PK108",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "P1_A1.PAST1",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "P1_A1.T101",
+                "vt": "str"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 6,
+        "x": 270,
+        "y": 520,
+        "wires": [
+            [
+                "e4954121.5f3e8"
+            ],
+            [
+                "e4954121.5f3e8"
+            ],
+            [
+                "e4954121.5f3e8"
+            ],
+            [
+                "e4954121.5f3e8"
+            ],
+            [
+                "9e1b38ee.16a368"
+            ],
+            []
+        ]
+    },
+    {
+        "id": "f5759dc8.4bd28",
+        "type": "delay",
+        "z": "f5e15242.abfd",
+        "name": "",
+        "pauseType": "delay",
+        "timeout": "1",
+        "timeoutUnits": "seconds",
+        "rate": "1",
+        "nbRateUnits": "1",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": false,
+        "x": 120,
+        "y": 520,
+        "wires": [
+            [
+                "d137397d.efab98"
+            ]
+        ]
+    },
+    {
+        "id": "57d33f95.4cb39c",
+        "type": "inject",
+        "z": "f5e15242.abfd",
+        "name": "",
+        "topic": "",
+        "payload": "[{\"Name\":\"A1\",\"Parent\":\"i=85\",\"Type\":\"Folder\",\"nsParent\":\"0\",\"ns\":\"1\"},{\"Name\":\"A1.Simul\",\"Parent\":\"A1\",\"Type\":\"Folder\"},{\"Name\":\"A1.Simul.smCMDALL_On\",\"Parent\":\"A1.Simul\",\"Type\":\"Boolean\"},{\"Name\":\"A1.PAST1\",\"Parent\":\"A1\",\"Type\":\"Folder\"},{\"Name\":\"A1.T101\",\"Parent\":\"A1\",\"Type\":\"Folder\"},{\"Name\":\"A1.T102\",\"Parent\":\"A1\",\"Type\":\"Folder\"},{\"Name\":\"A1.T103\",\"Parent\":\"A1\",\"Type\":\"Folder\"},{\"Name\":\"A1.T104\",\"Parent\":\"A1\",\"Type\":\"Folder\"},{\"Name\":\"A1.PK105\",\"Parent\":\"A1\",\"Type\":\"Folder\"},{\"Name\":\"A1.PK106\",\"Parent\":\"A1\",\"Type\":\"Folder\"},{\"Name\":\"A1.PK107\",\"Parent\":\"A1\",\"Type\":\"Folder\"},{\"Name\":\"A1.PK108\",\"Parent\":\"A1\",\"Type\":\"Folder\"},{\"Name\":\"A1.T101.PHS\",\"Parent\":\"A1.T101\",\"Type\":\"Folder\"},{\"Name\":\"A1.T102.PHS\",\"Parent\":\"A1.T102\",\"Type\":\"Folder\"},{\"Name\":\"A1.T103.PHS\",\"Parent\":\"A1.T103\",\"Type\":\"Folder\"},{\"Name\":\"A1.T104.PHS\",\"Parent\":\"A1.T104\",\"Type\":\"Folder\"},{\"Name\":\"A1.T101.PHS.LOADING\",\"Parent\":\"A1.T101.PHS\",\"Type\":\"Folder\"},{\"Name\":\"A1.T101.PHS.UNLOADING\",\"Parent\":\"A1.T101.PHS\",\"Type\":\"Folder\"},{\"Name\":\"A1.T101.PHS.COOLING\",\"Parent\":\"A1.T101.PHS\",\"Type\":\"Folder\"},{\"Name\":\"A1.T101.PHS.DOSING\",\"Parent\":\"A1.T101.PHS\",\"Type\":\"Folder\"},{\"Name\":\"A1.T101.PHS.FERMENTATION\",\"Parent\":\"A1.T101.PHS\",\"Type\":\"Folder\"},{\"comment\":\"-----------------------------PAST1------------------------------------\",\"Name\":\"A1.PAST1.STA\",\"Parent\":\"A1.PAST1\",\"Type\":\"UInt32\"},{\"Name\":\"A1.PAST1.ALM\",\"Parent\":\"A1.PAST1\",\"Type\":\"UInt32\"},{\"Name\":\"A1.PAST1.CMD\",\"Parent\":\"A1.PAST1\",\"Type\":\"UInt32\"},{\"Name\":\"A1.PAST1.STEP\",\"Parent\":\"A1.PAST1\",\"Type\":\"UInt32\"},{\"Name\":\"A1.PAST1.CR_RECIPE\",\"Parent\":\"A1.PAST1\",\"Type\":\"UInt32\"},{\"Name\":\"A1.PAST1.BATCH_ID\",\"Parent\":\"A1.PAST1\",\"Type\":\"UInt32\"},{\"Name\":\"A1.PAST1.FIQ1\",\"Parent\":\"A1.PAST1\",\"Type\":\"UInt32\"},{\"Name\":\"A1.PAST1.TT101\",\"Parent\":\"A1.PAST1\",\"Type\":\"Double\"},{\"Name\":\"A1.PAST1.PlanD\",\"Parent\":\"A1.PAST1\",\"Type\":\"String\"},{\"Name\":\"A1.PAST1.PlanQ\",\"Parent\":\"A1.PAST1\",\"Type\":\"Double\"},{\"Name\":\"A1.PAST1.smOn\",\"Parent\":\"A1.PAST1\",\"Type\":\"Boolean\"},{\"comment\":\"-----------------------------T101------------------------------------\",\"Name\":\"A1.T101.STA\",\"Parent\":\"A1.T101\",\"Type\":\"UInt32\"},{\"Name\":\"A1.T101.ALM\",\"Parent\":\"A1.T101\",\"Type\":\"UInt32\"},{\"Name\":\"A1.T101.CMD\",\"Parent\":\"A1.T101\",\"Type\":\"UInt32\"},{\"Name\":\"A1.T101.STEP\",\"Parent\":\"A1.T101\",\"Type\":\"UInt32\"},{\"Name\":\"A1.T101.CR_RECIPE\",\"Parent\":\"A1.T101\",\"Type\":\"UInt32\"},{\"Name\":\"A1.T101.BATCH_ID\",\"Parent\":\"A1.T101\",\"Type\":\"UInt32\"},{\"Name\":\"A1.T101.FIQ1\",\"Parent\":\"A1.T101\",\"Type\":\"UInt32\"},{\"Name\":\"A1.T101.TT1\",\"Parent\":\"A1.T101\",\"Type\":\"Double\"},{\"Name\":\"A1.T101.LT1\",\"Parent\":\"A1.T101\",\"Type\":\"Double\"},{\"Name\":\"A1.T101.smOn\",\"Parent\":\"A1.T101\",\"Type\":\"Boolean\"},{\"comment\":\"-----------------------------T101-LOADING-----------------------------------\",\"Name\":\"A1.T101.PHS.LOADING.ActionIdHi\",\"Parent\":\"A1.T101.PHS.LOADING\",\"Type\":\"UInt32\"},{\"Name\":\"A1.T101.PHS.LOADING.ActionIdLo\",\"Parent\":\"A1.T101.PHS.LOADING\",\"Type\":\"UInt32\"},{\"Name\":\"A1.T101.PHS.LOADING.AlarmTimestamp\",\"Parent\":\"A1.T101.PHS.LOADING\",\"Type\":\"UInt32\"},{\"Name\":\"A1.T101.PHS.LOADING.CommandTimestamp\",\"Parent\":\"A1.T101.PHS.LOADING\",\"Type\":\"UInt32\"},{\"Name\":\"A1.T101.PHS.LOADING.Interlock\",\"Parent\":\"A1.T101.PHS.LOADING\",\"Type\":\"UInt32\"},{\"Name\":\"A1.T101.PHS.LOADING.InterlockTimestamp\",\"Parent\":\"A1.T101.PHS.LOADING\",\"Type\":\"UInt32\"},{\"Name\":\"A1.T101.PHS.LOADING.IsManual\",\"Parent\":\"A1.T101.PHS.LOADING\",\"Type\":\"UInt32\"},{\"Name\":\"A1.T101.PHS.LOADING.RunIdHi\",\"Parent\":\"A1.T101.PHS.LOADING\",\"Type\":\"UInt32\"},{\"Name\":\"A1.T101.PHS.LOADING.RunIdLo\",\"Parent\":\"A1.T101.PHS.LOADING\",\"Type\":\"UInt32\"},{\"Name\":\"A1.T101.PHS.LOADING.StatusTimestamp\",\"Parent\":\"A1.T101.PHS.LOADING\",\"Type\":\"UInt32\"},{\"Name\":\"A1.T101.PHS.LOADING.CMD\",\"Parent\":\"A1.T101.PHS.LOADING\",\"Type\":\"UInt32\"},{\"Name\":\"A1.T101.PHS.LOADING.STA\",\"Parent\":\"A1.T101.PHS.LOADING\",\"Type\":\"UInt32\"},{\"Name\":\"A1.T101.PHS.LOADING.ALM\",\"Parent\":\"A1.T101.PHS.LOADING\",\"Type\":\"UInt32\"},{\"Name\":\"A1.T101.PHS.LOADING.LT1_SP\",\"Parent\":\"A1.T101.PHS.LOADING\",\"Type\":\"Double\"},{\"comment\":\"-----------------------------T101-UNLOADING-----------------------------------\",\"Name\":\"A1.T101.PHS.UNLOADING.ActionIdHi\",\"Parent\":\"A1.T101.PHS.UNLOADING\",\"Type\":\"UInt32\"},{\"Name\":\"A1.T101.PHS.UNLOADING.ActionIdLo\",\"Parent\":\"A1.T101.PHS.UNLOADING\",\"Type\":\"UInt32\"},{\"Name\":\"A1.T101.PHS.UNLOADING.AlarmTimestamp\",\"Parent\":\"A1.T101.PHS.UNLOADING\",\"Type\":\"UInt32\"},{\"Name\":\"A1.T101.PHS.UNLOADING.CommandTimestamp\",\"Parent\":\"A1.T101.PHS.UNLOADING\",\"Type\":\"UInt32\"},{\"Name\":\"A1.T101.PHS.UNLOADING.Interlock\",\"Parent\":\"A1.T101.PHS.UNLOADING\",\"Type\":\"UInt32\"},{\"Name\":\"A1.T101.PHS.UNLOADING.InterlockTimestamp\",\"Parent\":\"A1.T101.PHS.UNLOADING\",\"Type\":\"UInt32\"},{\"Name\":\"A1.T101.PHS.UNLOADING.IsManual\",\"Parent\":\"A1.T101.PHS.UNLOADING\",\"Type\":\"UInt32\"},{\"Name\":\"A1.T101.PHS.UNLOADING.RunIdHi\",\"Parent\":\"A1.T101.PHS.UNLOADING\",\"Type\":\"UInt32\"},{\"Name\":\"A1.T101.PHS.UNLOADING.RunIdLo\",\"Parent\":\"A1.T101.PHS.UNLOADING\",\"Type\":\"UInt32\"},{\"Name\":\"A1.T101.PHS.UNLOADING.StatusTimestamp\",\"Parent\":\"A1.T101.PHS.UNLOADING\",\"Type\":\"UInt32\"},{\"Name\":\"A1.T101.PHS.UNLOADING.CMD\",\"Parent\":\"A1.T101.PHS.UNLOADING\",\"Type\":\"UInt32\"},{\"Name\":\"A1.T101.PHS.UNLOADING.STA\",\"Parent\":\"A1.T101.PHS.UNLOADING\",\"Type\":\"UInt32\"},{\"Name\":\"A1.T101.PHS.UNLOADING.ALM\",\"Parent\":\"A1.T101.PHS.UNLOADING\",\"Type\":\"UInt32\"},{\"comment\":\"-----------------------------T101-COOLING-----------------------------------\",\"Name\":\"A1.T101.PHS.COOLING.ActionIdHi\",\"Parent\":\"A1.T101.PHS.COOLING\",\"Type\":\"UInt32\"},{\"Name\":\"A1.T101.PHS.COOLING.ActionIdLo\",\"Parent\":\"A1.T101.PHS.COOLING\",\"Type\":\"UInt32\"},{\"Name\":\"A1.T101.PHS.COOLING.AlarmTimestamp\",\"Parent\":\"A1.T101.PHS.COOLING\",\"Type\":\"UInt32\"},{\"Name\":\"A1.T101.PHS.COOLING.CommandTimestamp\",\"Parent\":\"A1.T101.PHS.COOLING\",\"Type\":\"UInt32\"},{\"Name\":\"A1.T101.PHS.COOLING.Interlock\",\"Parent\":\"A1.T101.PHS.COOLING\",\"Type\":\"UInt32\"},{\"Name\":\"A1.T101.PHS.COOLING.InterlockTimestamp\",\"Parent\":\"A1.T101.PHS.COOLING\",\"Type\":\"UInt32\"},{\"Name\":\"A1.T101.PHS.COOLING.IsManual\",\"Parent\":\"A1.T101.PHS.COOLING\",\"Type\":\"UInt32\"},{\"Name\":\"A1.T101.PHS.COOLING.RunIdHi\",\"Parent\":\"A1.T101.PHS.COOLING\",\"Type\":\"UInt32\"},{\"Name\":\"A1.T101.PHS.COOLING.RunIdLo\",\"Parent\":\"A1.T101.PHS.COOLING\",\"Type\":\"UInt32\"},{\"Name\":\"A1.T101.PHS.COOLING.StatusTimestamp\",\"Parent\":\"A1.T101.PHS.COOLING\",\"Type\":\"UInt32\"},{\"Name\":\"A1.T101.PHS.COOLING.CMD\",\"Parent\":\"A1.T101.PHS.COOLING\",\"Type\":\"UInt32\"},{\"Name\":\"A1.T101.PHS.COOLING.STA\",\"Parent\":\"A1.T101.PHS.COOLING\",\"Type\":\"UInt32\"},{\"Name\":\"A1.T101.PHS.COOLING.ALM\",\"Parent\":\"A1.T101.PHS.COOLING\",\"Type\":\"UInt32\"},{\"Name\":\"A1.T101.PHS.COOLING.TT1_SP\",\"Parent\":\"A1.T101.PHS.COOLING\",\"Type\":\"Double\"},{\"comment\":\"-----------------------------T101-DOSING-----------------------------------\",\"Name\":\"A1.T101.PHS.DOSING.ActionIdHi\",\"Parent\":\"A1.T101.PHS.DOSING\",\"Type\":\"UInt32\"},{\"Name\":\"A1.T101.PHS.DOSING.ActionIdLo\",\"Parent\":\"A1.T101.PHS.DOSING\",\"Type\":\"UInt32\"},{\"Name\":\"A1.T101.PHS.DOSING.AlarmTimestamp\",\"Parent\":\"A1.T101.PHS.DOSING\",\"Type\":\"UInt32\"},{\"Name\":\"A1.T101.PHS.DOSING.CommandTimestamp\",\"Parent\":\"A1.T101.PHS.DOSING\",\"Type\":\"UInt32\"},{\"Name\":\"A1.T101.PHS.DOSING.Interlock\",\"Parent\":\"A1.T101.PHS.DOSING\",\"Type\":\"UInt32\"},{\"Name\":\"A1.T101.PHS.DOSING.InterlockTimestamp\",\"Parent\":\"A1.T101.PHS.DOSING\",\"Type\":\"UInt32\"},{\"Name\":\"A1.T101.PHS.DOSING.IsManual\",\"Parent\":\"A1.T101.PHS.DOSING\",\"Type\":\"UInt32\"},{\"Name\":\"A1.T101.PHS.DOSING.RunIdHi\",\"Parent\":\"A1.T101.PHS.DOSING\",\"Type\":\"UInt32\"},{\"Name\":\"A1.T101.PHS.DOSING.RunIdLo\",\"Parent\":\"A1.T101.PHS.DOSING\",\"Type\":\"UInt32\"},{\"Name\":\"A1.T101.PHS.DOSING.StatusTimestamp\",\"Parent\":\"A1.T101.PHS.DOSING\",\"Type\":\"UInt32\"},{\"Name\":\"A1.T101.PHS.DOSING.CMD\",\"Parent\":\"A1.T101.PHS.DOSING\",\"Type\":\"UInt32\"},{\"Name\":\"A1.T101.PHS.DOSING.STA\",\"Parent\":\"A1.T101.PHS.DOSING\",\"Type\":\"UInt32\"},{\"Name\":\"A1.T101.PHS.DOSING.ALM\",\"Parent\":\"A1.T101.PHS.DOSING\",\"Type\":\"UInt32\"},{\"comment\":\"-----------------------------T101-FERMENTATION-----------------------------------\",\"Name\":\"A1.T101.PHS.FERMENTATION.ActionIdHi\",\"Parent\":\"A1.T101.PHS.FERMENTATION\",\"Type\":\"UInt32\"},{\"Name\":\"A1.T101.PHS.FERMENTATION.ActionIdLo\",\"Parent\":\"A1.T101.PHS.FERMENTATION\",\"Type\":\"UInt32\"},{\"Name\":\"A1.T101.PHS.FERMENTATION.AlarmTimestamp\",\"Parent\":\"A1.T101.PHS.FERMENTATION\",\"Type\":\"UInt32\"},{\"Name\":\"A1.T101.PHS.FERMENTATION.CommandTimestamp\",\"Parent\":\"A1.T101.PHS.FERMENTATION\",\"Type\":\"UInt32\"},{\"Name\":\"A1.T101.PHS.FERMENTATION.Interlock\",\"Parent\":\"A1.T101.PHS.FERMENTATION\",\"Type\":\"UInt32\"},{\"Name\":\"A1.T101.PHS.FERMENTATION.InterlockTimestamp\",\"Parent\":\"A1.T101.PHS.FERMENTATION\",\"Type\":\"UInt32\"},{\"Name\":\"A1.T101.PHS.FERMENTATION.IsManual\",\"Parent\":\"A1.T101.PHS.FERMENTATION\",\"Type\":\"UInt32\"},{\"Name\":\"A1.T101.PHS.FERMENTATION.RunIdHi\",\"Parent\":\"A1.T101.PHS.FERMENTATION\",\"Type\":\"UInt32\"},{\"Name\":\"A1.T101.PHS.FERMENTATION.RunIdLo\",\"Parent\":\"A1.T101.PHS.FERMENTATION\",\"Type\":\"UInt32\"},{\"Name\":\"A1.T101.PHS.FERMENTATION.StatusTimestamp\",\"Parent\":\"A1.T101.PHS.FERMENTATION\",\"Type\":\"UInt32\"},{\"Name\":\"A1.T101.PHS.FERMENTATION.CMD\",\"Parent\":\"A1.T101.PHS.FERMENTATION\",\"Type\":\"UInt32\"},{\"Name\":\"A1.T101.PHS.FERMENTATION.STA\",\"Parent\":\"A1.T101.PHS.FERMENTATION\",\"Type\":\"UInt32\"},{\"Name\":\"A1.T101.PHS.FERMENTATION.ALM\",\"Parent\":\"A1.T101.PHS.FERMENTATION\",\"Type\":\"UInt32\"},{\"comment\":\"-----------------------------T102------------------------------------\",\"Name\":\"A1.T102.STA\",\"Parent\":\"A1.T102\",\"Type\":\"UInt32\"},{\"Name\":\"A1.T102.ALM\",\"Parent\":\"A1.T102\",\"Type\":\"UInt32\"},{\"Name\":\"A1.T102.CMD\",\"Parent\":\"A1.T102\",\"Type\":\"UInt32\"},{\"Name\":\"A1.T102.STEP\",\"Parent\":\"A1.T102\",\"Type\":\"UInt32\"},{\"Name\":\"A1.T102.CR_RECIPE\",\"Parent\":\"A1.T102\",\"Type\":\"UInt32\"},{\"Name\":\"A1.T102.BATCH_ID\",\"Parent\":\"A1.T102\",\"Type\":\"UInt32\"},{\"Name\":\"A1.T102.FIQ1\",\"Parent\":\"A1.T102\",\"Type\":\"UInt32\"},{\"Name\":\"A1.T102.TT1\",\"Parent\":\"A1.T102\",\"Type\":\"Double\"},{\"Name\":\"A1.T102.LT1\",\"Parent\":\"A1.T102\",\"Type\":\"Double\"},{\"comment\":\"-----------------------------T103------------------------------------\",\"Name\":\"A1.T103.STA\",\"Parent\":\"A1.T103\",\"Type\":\"UInt32\"},{\"Name\":\"A1.T103.ALM\",\"Parent\":\"A1.T103\",\"Type\":\"UInt32\"},{\"Name\":\"A1.T103.CMD\",\"Parent\":\"A1.T103\",\"Type\":\"UInt32\"},{\"Name\":\"A1.T103.STEP\",\"Parent\":\"A1.T103\",\"Type\":\"UInt32\"},{\"Name\":\"A1.T103.CR_RECIPE\",\"Parent\":\"A1.T103\",\"Type\":\"UInt32\"},{\"Name\":\"A1.T103.BATCH_ID\",\"Parent\":\"A1.T103\",\"Type\":\"UInt32\"},{\"Name\":\"A1.T103.FIQ1\",\"Parent\":\"A1.T103\",\"Type\":\"UInt32\"},{\"Name\":\"A1.T103.TT1\",\"Parent\":\"A1.T103\",\"Type\":\"Double\"},{\"Name\":\"A1.T103.LT1\",\"Parent\":\"A1.T103\",\"Type\":\"Double\"},{\"comment\":\"-----------------------------T104------------------------------------\",\"Name\":\"A1.T104.STA\",\"Parent\":\"A1.T104\",\"Type\":\"UInt32\"},{\"Name\":\"A1.T104.ALM\",\"Parent\":\"A1.T104\",\"Type\":\"UInt32\"},{\"Name\":\"A1.T104.CMD\",\"Parent\":\"A1.T104\",\"Type\":\"UInt32\"},{\"Name\":\"A1.T104.STEP\",\"Parent\":\"A1.T104\",\"Type\":\"UInt32\"},{\"Name\":\"A1.T104.CR_RECIPE\",\"Parent\":\"A1.T104\",\"Type\":\"UInt32\"},{\"Name\":\"A1.T104.BATCH_ID\",\"Parent\":\"A1.T104\",\"Type\":\"UInt32\"},{\"Name\":\"A1.T104.FIQ1\",\"Parent\":\"A1.T104\",\"Type\":\"UInt32\"},{\"Name\":\"A1.T104.TT1\",\"Parent\":\"A1.T104\",\"Type\":\"Double\"},{\"Name\":\"A1.T104.LT1\",\"Parent\":\"A1.T104\",\"Type\":\"Double\"},{\"comment\":\"-----------------------------PK105------------------------------------\",\"Name\":\"A1.PK105.STA\",\"Parent\":\"A1.PK105\",\"Type\":\"UInt32\"},{\"Name\":\"A1.PK105.ALM\",\"Parent\":\"A1.PK105\",\"Type\":\"UInt32\"},{\"Name\":\"A1.PK105.CMD\",\"Parent\":\"A1.PK105\",\"Type\":\"UInt32\"},{\"Name\":\"A1.PK105.STEP\",\"Parent\":\"A1.PK105\",\"Type\":\"UInt32\"},{\"Name\":\"A1.PK105.CR_RECIPE\",\"Parent\":\"A1.PK105\",\"Type\":\"UInt32\"},{\"Name\":\"A1.PK105.BATCH_ID\",\"Parent\":\"A1.PK105\",\"Type\":\"UInt32\"},{\"Name\":\"A1.PK105.FIQ1\",\"Parent\":\"A1.PK105\",\"Type\":\"UInt32\"},{\"Name\":\"A1.PK105.FIQ2\",\"Parent\":\"A1.PK105\",\"Type\":\"UInt32\"},{\"Name\":\"A1.PK105.PlanD\",\"Parent\":\"A1.PK105\",\"Type\":\"String\"},{\"Name\":\"A1.PK105.PlanQ\",\"Parent\":\"A1.PK105\",\"Type\":\"Double\"},{\"Name\":\"A1.PK105.smOn\",\"Parent\":\"A1.PK105\",\"Type\":\"Boolean\"},{\"comment\":\"-----------------------------PK106------------------------------------\",\"Name\":\"A1.PK106.STA\",\"Parent\":\"A1.PK106\",\"Type\":\"UInt32\"},{\"Name\":\"A1.PK106.ALM\",\"Parent\":\"A1.PK106\",\"Type\":\"UInt32\"},{\"Name\":\"A1.PK106.CMD\",\"Parent\":\"A1.PK106\",\"Type\":\"UInt32\"},{\"Name\":\"A1.PK106.STEP\",\"Parent\":\"A1.PK106\",\"Type\":\"UInt32\"},{\"Name\":\"A1.PK106.CR_RECIPE\",\"Parent\":\"A1.PK106\",\"Type\":\"UInt32\"},{\"Name\":\"A1.PK106.BATCH_ID\",\"Parent\":\"A1.PK106\",\"Type\":\"UInt32\"},{\"Name\":\"A1.PK106.FIQ1\",\"Parent\":\"A1.PK106\",\"Type\":\"UInt32\"},{\"Name\":\"A1.PK106.FIQ2\",\"Parent\":\"A1.PK106\",\"Type\":\"UInt32\"},{\"Name\":\"A1.PK106.PlanD\",\"Parent\":\"A1.PK106\",\"Type\":\"String\"},{\"Name\":\"A1.PK106.PlanQ\",\"Parent\":\"A1.PK106\",\"Type\":\"Double\"},{\"Name\":\"A1.PK106.smOn\",\"Parent\":\"A1.PK106\",\"Type\":\"Boolean\"},{\"comment\":\"-----------------------------PK107------------------------------------\",\"Name\":\"A1.PK107.STA\",\"Parent\":\"A1.PK107\",\"Type\":\"UInt32\"},{\"Name\":\"A1.PK107.ALM\",\"Parent\":\"A1.PK107\",\"Type\":\"UInt32\"},{\"Name\":\"A1.PK107.CMD\",\"Parent\":\"A1.PK107\",\"Type\":\"UInt32\"},{\"Name\":\"A1.PK107.STEP\",\"Parent\":\"A1.PK107\",\"Type\":\"UInt32\"},{\"Name\":\"A1.PK107.CR_RECIPE\",\"Parent\":\"A1.PK107\",\"Type\":\"UInt32\"},{\"Name\":\"A1.PK107.BATCH_ID\",\"Parent\":\"A1.PK107\",\"Type\":\"UInt32\"},{\"Name\":\"A1.PK107.FIQ1\",\"Parent\":\"A1.PK107\",\"Type\":\"UInt32\"},{\"Name\":\"A1.PK107.FIQ2\",\"Parent\":\"A1.PK107\",\"Type\":\"UInt32\"},{\"Name\":\"A1.PK107.PlanD\",\"Parent\":\"A1.PK107\",\"Type\":\"String\"},{\"Name\":\"A1.PK107.PlanQ\",\"Parent\":\"A1.PK107\",\"Type\":\"Double\"},{\"Name\":\"A1.PK107.smOn\",\"Parent\":\"A1.PK107\",\"Type\":\"Boolean\"},{\"comment\":\"-----------------------------PK108------------------------------------\",\"Name\":\"A1.PK108.STA\",\"Parent\":\"A1.PK108\",\"Type\":\"UInt32\"},{\"Name\":\"A1.PK108.ALM\",\"Parent\":\"A1.PK108\",\"Type\":\"UInt32\"},{\"Name\":\"A1.PK108.CMD\",\"Parent\":\"A1.PK108\",\"Type\":\"UInt32\"},{\"Name\":\"A1.PK108.STEP\",\"Parent\":\"A1.PK108\",\"Type\":\"UInt32\"},{\"Name\":\"A1.PK108.CR_RECIPE\",\"Parent\":\"A1.PK108\",\"Type\":\"UInt32\"},{\"Name\":\"A1.PK108.BATCH_ID\",\"Parent\":\"A1.PK108\",\"Type\":\"UInt32\"},{\"Name\":\"A1.PK108.FIQ1\",\"Parent\":\"A1.PK108\",\"Type\":\"UInt32\"},{\"Name\":\"A1.PK108.FIQ2\",\"Parent\":\"A1.PK108\",\"Type\":\"UInt32\"},{\"Name\":\"A1.PK108.PlanD\",\"Parent\":\"A1.PK108\",\"Type\":\"String\"},{\"Name\":\"A1.PK108.PlanQ\",\"Parent\":\"A1.PK108\",\"Type\":\"Double\"},{\"Name\":\"A1.PK108.smOn\",\"Parent\":\"A1.PK108\",\"Type\":\"Boolean\"}]",
+        "payloadType": "json",
+        "repeat": "",
+        "crontab": "",
+        "once": true,
+        "onceDelay": "2",
+        "x": 135,
+        "y": 240,
+        "wires": [
+            [
+                "6c1d550b.2e5c"
+            ]
+        ],
+        "l": false
+    },
+    {
+        "id": "440c732d.f45234",
+        "type": "inject",
+        "z": "f5e15242.abfd",
+        "name": "",
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": "5",
+        "x": 280,
+        "y": 120,
+        "wires": [
+            [
+                "2292614.dd2801e"
+            ]
+        ]
+    },
+    {
+        "id": "2292614.dd2801e",
+        "type": "function",
+        "z": "f5e15242.abfd",
+        "name": "StartupPHS",
+        "func": "function proc_mach(ob) {\nvar CFG = ob.CFG || {\"STEP1\":1, \"T_STEP1\":0, \"T_STEP2\":0};\nvar CTRL = ob.CTRL || {};\nvar STA = ob.STA.val  || 0; //MES STA\nvar CMD = ob.CMD.val  || 0; //MES CMD\nvar TS_CMD = ob.CommandTimestamp.val || 0;  \nvar TS_STA = ob.StatusTimestamp.val || 0;\n\n/*вибір джерела команди керування станом в залежності від режиму*/\nvar CMD_ABORT = CTRL.CMD_ABORT || (CMD==5);\nvar CMD_HOLD = CTRL.CMD_HOLD || (CMD==4);\nvar CMD_PAUSE = CTRL.CMD_PAUSE || (CMD==7);\nvar CMD_RESET = CTRL.CMD_RESET || (CMD==9) || (CMD==2);\nvar CMD_RESTART = CTRL.CMD_RESTART || (CMD==6) || (CMD==2);\nvar CMD_RESUME = CTRL.CMD_RESUME || CTRL.CMD_RESTART || (CMD==2) || (CMD==8) || (CMD==9);\nvar CMD_START = CTRL.CMD_START || (CMD==2);\nvar CMD_STOP = CTRL.CMD_STOP || (CMD==3);\n\nvar TS_NOW =  new Date().getTime();\nCFG.STEP1_PREV = CFG.STEP1;\n//CFG.CMD_PREV = CMD;\n\nswitch (CFG.STEP1) {\n  case 0 ://– ініціалізація (тільки при старті ПЛК) не видимий з HMI\n    CFG.STEP1 =1;   CFG.T_STEP2 = 0;  CFG.T_STEP1 = 0;\n\tbreak;\n  case 1 ://– Idle (очікує) (назва Режим Стоп)\n    if (CMD_START===true) { \n\t\tCFG.STEP1=2;\n\t}\n\tCFG.T_STEP1 = 0;\n    CTRL.PAUSING_CMPLT = false;\n    CTRL.RUNING_CMPLT = false;\n    CTRL.STARTING_CMPLT = false;\n    CTRL.COMPLETING_CMPLT = false;\n    CTRL.HL_RUNNING_CMPLT = false;\n    CTRL.HOLDING_CMPLT = false;\n    CTRL.STOPPING_CMPLT = false;\n    CTRL.ABORTING_CMPLT = false;\n    CTRL.RESUMING_CMPLT = false;\n    CTRL.RESTARTING_CMPLT = false;\n\tbreak;\n  case 2 ://- Running (виконується) (назва режим Робота)\n    if (CTRL.RUNING_CMPLT===true) { \n\t\tCFG.STEP1=12; CFG.T_STEP1 = 0; CFG.T_STEP2=0; \n    }\n\tif (CMD_PAUSE===true) CFG.STEP1=8;\n    if (CMD_HOLD===true) CFG.STEP1=5;\n    if (CMD_STOP===true) CFG.STEP1=10;\n    if (CMD_ABORT===true) CFG.STEP1=3;\n    if (CTRL.PAUSING_CMPLT === false) {\n\t\tCTRL.RESUMING_CMPLT = false;\n\t\tCTRL.RESTARTING_CMPLT = false;\n\t\tCTRL.HOLDING_CMPLT = false;\n\t}\n\tbreak;\n  case 3 ://- Aborting\n\tif (CTRL.ABORTING_CMPLT===true || CFG.T_STEP2>1) CFG.STEP1=4;      \n\tbreak;\n  case 4 ://- Aborted\n    if (CMD_RESET===true || CFG.T_STEP2>5) CFG.STEP1=1; \n\tbreak;\n  case 5 ://– Holding (утримується)\n    if (CTRL.HOLDING_CMPLT===true || CFG.T_STEP2>1) CFG.STEP1=6;\n    if (CMD_STOP===true) CFG.STEP1=10;\n    if (CMD_ABORT===true) CFG.STEP1=3;   \n\tbreak;\n  case 6 ://– Held (утримуване)\n    if (CMD_RESTART===true) CFG.STEP1=7;   \n    if (CMD_STOP===true) CFG.STEP1=10;\n    if (CMD_ABORT===true) CFG.STEP1=3;    \n\tbreak;\n  case 7 ://– Restarting (перезапускається)\n    if (CTRL.RESTARTING_CMPLT===true || CFG.T_STEP2>1) CFG.STEP1=2;\n    if (CMD_HOLD===true) CFG.STEP1=5; \n    if (CMD_STOP===true) CFG.STEP1=10;\n    if (CMD_ABORT===true) CFG.STEP1=3;   \n\tbreak;\n  case 8 ://- Pausing\n    if (CTRL.PAUSING_CMPLT===true || CFG.T_STEP2>1) CFG.STEP1=9;\n    if (CMD_HOLD===true) CFG.STEP1=5;\n    if (CMD_STOP===true) CFG.STEP1=10;\n    if (CMD_ABORT===true) CFG.STEP1=3;   \n\tbreak;\n  case 9 ://- Paused\n    if (CMD_RESUME===true) CFG.STEP1=2;\n    if (CTRL.RUNING_CMPLT===true) CFG.STEP1 = 12;\n    if (CMD_HOLD===true) CFG.STEP1=5;\n    if (CMD_STOP===true) CFG.STEP1=10;\n    if (CMD_ABORT===true) CFG.STEP1=3;   \n\tbreak;\n  case 10 ://– Stopping (зупиняється)\n    if (CTRL.STOPPING_CMPLT===true || CFG.T_STEP2>1) CFG.STEP1=11;\n    if (CMD_ABORT===true) CFG.STEP1=3;   \n\tbreak;\n  case 11 ://– Stopped (зупинено)\n    if (CMD_RESET===true || CFG.T_STEP2>5) CFG.STEP1=1;    \n\tbreak;\n  case 12 ://– Complete \n    if (CMD_RESET===true || CFG.T_STEP2>5) CFG.STEP1=1;\n    break;\n  default:\n    CFG.STEP1=0;\n    break\n}\n\nCTRL.STA_IDLE=(CFG.STEP1===1);\nCTRL.STA_RUNNING=(CFG.STEP1===2);\nCTRL.STA_ABORTING=(CFG.STEP1===3);\nCTRL.STA_ABORTED=(CFG.STEP1===4);\nCTRL.STA_HOLDING=(CFG.STEP1===5);\nCTRL.STA_HELD=(CFG.STEP1===6);\nCTRL.STA_RESTARTING=(CFG.STEP1===7);\nCTRL.STA_PAUSING=(CFG.STEP1===8);\nCTRL.STA_PAUSED=(CFG.STEP1===9);\nCTRL.STA_STOPPING=(CFG.STEP1===10);\nCTRL.STA_STOPPED=(CFG.STEP1===11);\nCTRL.STA_COMPLETE=(CFG.STEP1===12);\n\nCTRL.CMD_ABORT = false;\nCTRL.CMD_HOLD = false;\nCTRL.CMD_PAUSE = false;\nCTRL.CMD_RESET = false;\nCTRL.CMD_RESTART = false;\nCTRL.CMD_RESUME = false;\nCTRL.CMD_START = false;\nCTRL.CMD_STOP = false;\n\nSTA=CFG.STEP1;\nCFG.TS_PREV = CFG.TS_PREV || TS_NOW;\nvar delta = (TS_NOW - CFG.TS_PREV)/1000;\nCFG.T_STEP1 = CFG.T_STEP1 + delta;\nCFG.T_STEP2 = CFG.T_STEP2 + delta;\nCFG.TS_PREV = TS_NOW;\nif (CFG.STEP1_PREV !== CFG.STEP1){\n    TS_STA = TS_NOW/1000;\n    CFG.T_STEP2 = 0;\n}\nTS_CMD = TS_NOW/1000;\n\nob.CFG = CFG;\nob.CTRL = CTRL;\nob.STA.val = STA;\nob.CMD.val = CMD; \nob.CommandTimestamp.val = TS_CMD;  \nob.StatusTimestamp.val = TS_STA;\n\nreturn ob;\n}\n\n/*------------------- обробка автомату станів процедури\nID\nCFG - конфігурування та плинний стан\nCFG.TS_PREV - попередня відмітка часу\nSTA, CMD  - для роботи з ЛМІ\nCTRL - для спрощення контролю/керування з програми користувача ПЛК\n--- стани:\n0 – ініціалізація (тільки при старті ПЛК) не видимий з HMI\n1 – Idle (очікує) (назва Режим Стоп)\n2 - Running (виконується) (назва режим Робота)\n3 - Aborting\n4 - Aborted\n5 – Holding (утримується)\n6 – Held (утримуване)\n7 – Restarting (перезапускається)\n8 - Pausing\n9 - Paused\n10 – Stopping (зупиняється)\n11 – Stopped (зупинено)\n12 – Complete (запускається)\n--- команди \n2 – START (запустити процедуру)\n3 – STOP (зупинити виконання процедури)\n4 – HOLD (утримувати)\n5 – ABORT (перервати)\n6 – RESTART (перезапустити)\n7 – PAUSE (призупинити)\n8 – RESUME (відновити, продовжити)  \n9 – RESET (скинути)\n\nACTION_ID_HI, ACTION_ID_LOW - Идентификатор текущего ACTION MEScontrol (batch id или service action id). Устанавливается в MEScontrol. Используется для резервирования технологического процесса для текущего ACTION. Если одно из этих полей не равно 0, то MEScontrol может отправлять команды в этот технологический процесс только из соответствующих действий. \nRUN_ID_HI, RUN_ID_LOW - Идентификатор запуска batch action. Устанавливается в MEScontrol. Используется для мониторинга и управления выполнения партии.\nCOMMAND - Код команды. Устанавливается в MEScontrol.\nTS_COMMAND - Время последнего обновления поля команды. Устанавливается ПЛК автоматически.\nSTATUS - Состояние технологического процесса. Устанавливается ПЛК автоматически. MEScontrol подписывается на поле изменения статуса OPC. Он реагирует на изменение статуса и понимает, что команда выполнена, и может начать следующее действие.\nTS_STATUS - Время последнего обновления поля статуса. Устанавливается ПЛК автоматически.\nINTERLOCK - Код блокировки Устанавливается ПЛК автоматически. Это поле представляет причину блокировки технологического процесса. Если значение = 0, то технологический процесс не блокирован, и MEScontrol может отправить ему любую команду. Если значение не равно 0, то технологический процесс блокирован по какой-то причине. MEScontrol не может отправлять ему какие-либо команды.\nTS_INTERLOCK - Время последнего обновления поля блокировки. Устанавливается ПЛК автоматически.\nALARM - Код тревоги. Устанавливается ПЛК автоматически. Это поле представляет причину тревоги технологического процесса.\nTS_ALARM - Время последнего обновления поля тревоги. Устанавливается ПЛК автоматически.\nPARAMETER_IN0  PARAMETER_IN9 - Параметры ввода команды. Устанавливается MEScontrol перед заданием значения поля команды. \nPARAMETER_OUT0  PARAMETER_OUT9 - Выходные параметры технологического процесса. Устанавливается ПЛК автоматически. Содержит любую информацию о технологическом процессе, ходе выполнения, результате выполнения и т. Д.\nIS_MANUAL - Это ручной флаг. Если это значение = 0, то MEScontrol управляет этим технологическим процессом (может отправлять команды, реагировать на изменение статуса) Если это значение = 1, то любая внешняя система имеет контроль. MEScontrol не может отправлять команды и игнорировать сообщения об изменении статуса.\n*/\n\nvar batch = {};\nbatch.proc_mach = proc_mach;\nglobal.set (\"batch\", batch); \n\n\n",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 450,
+        "y": 120,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "cf880720.4b9b18",
+        "type": "inject",
+        "z": "f5e15242.abfd",
+        "name": "",
+        "topic": "P1_A1.T101",
+        "payload": "",
+        "payloadType": "date",
+        "repeat": "1",
+        "crontab": "",
+        "once": true,
+        "onceDelay": "20",
+        "x": 250,
+        "y": 840,
+        "wires": [
+            [
+                "728b5520.28bf9c"
+            ]
+        ]
+    },
+    {
+        "id": "728b5520.28bf9c",
+        "type": "function",
+        "z": "f5e15242.abfd",
+        "name": "T101",
+        "func": "var eq_name = msg.topic; //name equipment\nvar eq = flow.get (eq_name);//equipment\nvar PHS = eq.PHS;\n\n//------------імітація -----------\nif (eq.smOn.val===true) {\n    if (PHS.COOLING.CTRL.STA_RUNNING===true)\n    {\n        eq.TT1.val = eq.TT1.val - 0.5;  \n    }\n    if (PHS.LOADING.CTRL.STA_RUNNING===true)\n    {\n        eq.TT1.val = 25.0;\n        eq.LT1.val = eq.LT1.val + 2.5;\n    }\n    if (PHS.UNLOADING.CTRL.STA_RUNNING===true)\n    {\n        eq.LT1.val = eq.LT1.val - 2.5;\n    }    \n    if (PHS.UNLOADING.CTRL.STA_STOPPED===true || PHS.UNLOADING.CTRL.STA_COMPLETE===true)\n    {\n        eq.TT1.val = 25.0;\n    }\n    if (eq.TT1.val <2.0) eq.TT1.val=2.0; \n    if (eq.TT1.val >90.0) eq.TT1.val=90.0;\n    if (eq.LT1.val <0.0) eq.LT1.val=0.0;\n    if (eq.LT1.val >100.0) eq.LT1.val=100.0;\n    toOPC (eq.TT1);\n    toOPC (eq.LT1);\n    flow.set (eq_name + \".TT1\", eq.TT1);\n    flow.set (eq_name + \".LT1\", eq.LT1);\n}\n//------------\n\n//---- керування\nif (PHS.LOADING.CTRL.STA_RUNNING===true)\n{\n    if (eq.LT1.val >= PHS.LOADING.LT1_SP.val) PHS.LOADING.CTRL.RUNING_CMPLT = true;\n}\nif (PHS.UNLOADING.CTRL.STA_RUNNING===true)\n{\n    if (eq.LT1.val <=1) PHS.UNLOADING.CTRL.RUNING_CMPLT = true;\n}\nif (PHS.COOLING.CTRL.STA_RUNNING===true)\n{\n    if (eq.TT1.val <= PHS.COOLING.TT1_SP.val) PHS.COOLING.CTRL.RUNING_CMPLT = true;\n}\n//------\nflow.set (eq_name + \".PHS.LOADING.CFG\", PHS.LOADING.CFG);\nflow.set (eq_name + \".PHS.LOADING.CTRL\", PHS.LOADING.CTRL);\nflow.set (eq_name + \".PHS.UNLOADING.CFG\", PHS.UNLOADING.CFG);\nflow.set (eq_name + \".PHS.UNLOADING.CTRL\", PHS.UNLOADING.CTRL);\nflow.set (eq_name + \".PHS.COOLING.CFG\", PHS.COOLING.CFG);\nflow.set (eq_name + \".PHS.COOLING.CTRL\", PHS.COOLING.CTRL);\n\nfunction toOPC (var1)\n{\n    var msg = {\"topic\" : var1.ns, \"payload\" :var1.val, \"action\" : \"write\"};\n    node.send (msg);\n}\n\n\n",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 470,
+        "y": 840,
+        "wires": [
+            [
+                "6bfc4e86.abea4",
+                "7b53cec5.327388"
+            ]
+        ]
+    },
+    {
+        "id": "6bfc4e86.abea4",
+        "type": "debug",
+        "z": "f5e15242.abfd",
+        "name": "",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "x": 670,
+        "y": 840,
+        "wires": []
+    },
+    {
+        "id": "f67c50b0.b2a92",
+        "type": "delay",
+        "z": "f5e15242.abfd",
+        "name": "",
+        "pauseType": "delay",
+        "timeout": "3",
+        "timeoutUnits": "seconds",
+        "rate": "1",
+        "nbRateUnits": "1",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": false,
+        "x": 360,
+        "y": 180,
+        "wires": [
+            [
+                "2292614.dd2801e"
+            ]
+        ]
+    },
+    {
+        "id": "2149ea97.3988b6",
+        "type": "function",
+        "z": "f5e15242.abfd",
+        "name": "PHASES",
+        "func": "var PH_NAME = msg.topic;\nif (PH_NAME.indexOf(\"PHS.\")<0){\n   var area = flow.get (\"P1_A1\");\n    if (area.T101.CMD.val == 1 || area.T101.CMD.val == 2) {\n        var PHS = area.T101.PHS;\n        PHS.LOADING.CTRL.CMD_STOP = true;\n        PHS.UNLOADING.CTRL.CMD_STOP = true;\n        PHS.COOLING.CTRL.CMD_STOP = true;\n        PHS.DOSING.CTRL.CMD_STOP = true;\n        PHS.FERMENTATION.CTRL.CMD_STOP = true;\n        area.T101.CMD.val = 0;\n        toOPC (area.T101.CMD);\n        flow.set (PHS.LOADING[\"parent\"], PHS);\n    }\n    return;\n}\nvar batch = global.get (\"batch\");\nvar PH = flow.get(PH_NAME);\nPH.CFG = PH.CFG || {};\nPH.CTRL = PH.CTRL || {};\nPH = batch.proc_mach (PH);\nif (PH.CMD.val !== PH.CFG.CMD_PREV){ \n    PH.CMD.val = 0;\n    toOPC (PH.CMD);\n}\nPH.CFG.CMD_PREV = PH.CMD.val;\ntoOPC (PH.STA);\ntoOPC (PH.ALM);\ntoOPC (PH.StatusTimestamp);\ntoOPC (PH.CommandTimestamp);\ntoOPC (PH.AlarmTimestamp);\nflow.set (PH_NAME, PH);\n\nfunction toOPC (var1)\n{\n    var msg = {\"topic\" : var1.ns, \"payload\" :var1.val, \"action\" : \"write\"};\n    node.send (msg);\n}\n\n\n",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 720,
+        "y": 480,
+        "wires": [
+            [
+                "7b53cec5.327388"
+            ]
+        ]
+    },
+    {
+        "id": "41e65560.f7a7ec",
+        "type": "inject",
+        "z": "f5e15242.abfd",
+        "name": "T101.PHS.LOADING",
+        "topic": "P1_A1.T101.PHS.LOADING",
+        "payload": "",
+        "payloadType": "date",
+        "repeat": "1",
+        "crontab": "",
+        "once": true,
+        "onceDelay": "20.1",
+        "x": 940,
+        "y": 540,
+        "wires": [
+            [
+                "2149ea97.3988b6"
+            ]
+        ]
+    },
+    {
+        "id": "e88b29c4.a4bf28",
+        "type": "inject",
+        "z": "f5e15242.abfd",
+        "name": "T101.PHS.UNLOADING",
+        "topic": "P1_A1.T101.PHS.UNLOADING",
+        "payload": "",
+        "payloadType": "date",
+        "repeat": "1",
+        "crontab": "",
+        "once": true,
+        "onceDelay": "20.2",
+        "x": 950,
+        "y": 580,
+        "wires": [
+            [
+                "2149ea97.3988b6"
+            ]
+        ]
+    },
+    {
+        "id": "3657ab12.5b4198",
+        "type": "inject",
+        "z": "f5e15242.abfd",
+        "name": "T101.PHS.DOSING",
+        "topic": "P1_A1.T101.PHS.DOSING",
+        "payload": "",
+        "payloadType": "date",
+        "repeat": "1",
+        "crontab": "",
+        "once": true,
+        "onceDelay": "20.3",
+        "x": 940,
+        "y": 620,
+        "wires": [
+            [
+                "2149ea97.3988b6"
+            ]
+        ]
+    },
+    {
+        "id": "7e83dfb9.a9eb58",
+        "type": "inject",
+        "z": "f5e15242.abfd",
+        "name": "T101.PHS.COOLING",
+        "topic": "P1_A1.T101.PHS.COOLING",
+        "payload": "",
+        "payloadType": "date",
+        "repeat": "1",
+        "crontab": "",
+        "once": true,
+        "onceDelay": "20.4",
+        "x": 940,
+        "y": 660,
+        "wires": [
+            [
+                "2149ea97.3988b6"
+            ]
+        ]
+    },
+    {
+        "id": "1cd1be12.ac3ed2",
+        "type": "inject",
+        "z": "f5e15242.abfd",
+        "name": "T101.PHS.FERMENTATION",
+        "topic": "P1_A1.T101.PHS.FERMENTATION",
+        "payload": "",
+        "payloadType": "date",
+        "repeat": "1",
+        "crontab": "",
+        "once": true,
+        "onceDelay": "20.5",
+        "x": 960,
+        "y": 700,
+        "wires": [
+            [
+                "2149ea97.3988b6"
+            ]
+        ]
+    },
+    {
+        "id": "19c761b7.e5ff9e",
+        "type": "OpcUa-Endpoint",
+        "z": "",
+        "endpoint": "opc.tcp://localhost:53880/UA/SimpleNodeRedServer",
+        "secpol": "None",
+        "secmode": "NONE",
+        "login": false
+    }
+]
