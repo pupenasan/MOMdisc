@@ -255,7 +255,7 @@ Workflow має достатньо обширну бібліотеку для к
 
 2) Вкажіть назву `Operation complete XX` (рис.5.7(2)).
 
-3) Вкажіть `Subscription Item` ( `STA` type `UInt32`) і `Context Item` (`WC` type `Work Center`) (рис.5.7(3)). Таким чином Subscriber буде отримувати значення параметрів і контекст робочого центру.
+3) Вкажіть `Subscription Item` ( `STA` type `UInt32`) і `Context Item` (`WC` type `Work Center`) (рис.5.7(3)), зверніть увагу що опція `Is attendant`  не повинна стояти. Таким чином Subscriber буде отримувати значення параметрів і контекст робочого центру.
 
 4) Подвійним кліком по `Workflow` зайдіть в `Workflow Editor`. Редактор запропонує автоматично перевизначити `Arguments` (рис.5.7(4)), підтвердіть кнопкою `Yes`.
 
