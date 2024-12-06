@@ -1,0 +1,17 @@
+# Current Standards Landscape for Smart Manufacturing Systems
+
+## Abstract 
+
+Today’s manufacturers face ever-increasing demands of variability—greater customization, smaller lot sizes, sudden supply-chain changes and disruptions. Successful manufacturers will have to choose and incorporate technologies that help them quickly adapt to rapid change and to elevate product quality while optimizing use of energy and resources. These technologies form the core of an emerging, information-centric, Smart Manufacturing System that maximizes the flow and re-use of data throughout the enterprise. The ability of disparate systems, however, to exchange, understand, and exploit product, production, and business data rests critically on information standards. This report provides a review of the body of pertinent standards—a standards landscape—upon which future smart manufacturing systems will rely. This landscape comprises integration standards within and across three manufacturing lifecycle dimensions: product, production system, and business. We discuss opportunities and challenges for new standards, and present emerging activities addressing these opportunities. This report will allow manufacturing practitioners to better understand those standards useful to integration of smart manufacturing technologies. 
+
+## Анотація
+
+Сучасні виробники стикаються з дедалі зростаючими вимогами щодо різноманітності — більшої індивідуальності, менших розмірів партій, раптових змін у ланцюзі поставок і збоїв. Успішні виробники повинні будуть вибрати та впровадити технології, які допоможуть їм швидко адаптуватися до швидких змін і підвищити якість продукції, оптимізуючи використання енергії та ресурсів. Ці технології утворюють ядро нової інформаційно-орієнтованої системи Smart Manufacturing System, яка максимізує потік і повторне використання даних на підприємстві. Однак здатність розрізнених систем обмінюватися, розуміти та використовувати дані про продукт, виробництво та бізнес в основному залежить від інформаційних стандартів. У цьому звіті представлено огляд відповідних стандартів — ландшафту стандартів, — на який спиратимуться майбутні інтелектуальні виробничі системи. Цей ландшафт включає стандарти інтеграції в межах і між трьома вимірами життєвого циклу виробництва: продукт, виробнича система та бізнес. Ми обговорюємо можливості та виклики для нових стандартів і представляємо нові заходи, спрямовані на ці можливості. Цей звіт дозволить фахівцям-практикам краще зрозуміти ці стандарти, корисні для інтеграції інтелектуальних виробничих технологій.
+
+## Disclaimer 
+
+Certain commercial systems are identified in this paper. Such identification does not imply recommendation or endorsement by NIST; nor does it imply that the products identified are necessarily the best available for the purpose. Further, any opinions, findings, conclusions, or recommendations expressed in this material are those of the authors and do not necessarily reflect the views of NIST or any other supporting U.S. government or corporate organizations.
+
+## Відмова від відповідальності
+
+У цьому документі описано певні комерційні системи. Така ідентифікація не означає рекомендацію чи схвалення NIST; це також не означає, що ідентифіковані продукти обов'язково є найкращими з доступних для цієї мети. Крім того, будь-які думки, висновки, висновки чи рекомендації, висловлені в цьому матеріалі, належать авторам і не обов’язково відображають погляди NIST або будь-яких інших урядових або корпоративних організацій США, що підтримують.
