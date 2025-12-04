@@ -18,13 +18,11 @@
 
 
 
-План в НУХТ [на 2024 рік](план2024.md)
-
 ## Корисні посилання
 
 [Веб-сторінка курсу на GitHub](https://pupenasan.github.io/MOMdisc/)
 
-[Репозиторій](https://github.com/pupenasan/MOM)
+[Репозиторій](https://github.com/pupenasan/MOMdisc)
 
 ---
 
